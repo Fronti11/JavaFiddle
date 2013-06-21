@@ -1,0 +1,126 @@
+package mweb.services.wifi.dstv.walkatouch;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import mweb.services.wifi.dstv.walkatouch.domain.Device;
+import mweb.services.wifi.dstv.walkatouch.interfaces.IDevice;
+import mweb.services.wifi.dstv.walkatouch.interfaces.IDeviceService;
+import mweb.services.wifi.dstv.walkatouch.repositories.RadiusService;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import sun.awt.RepaintArea;
+
+
+
+@Path("/1/device")
+public class v1_device implements IDevice {
+	
+	private IDeviceService devRepo;
+	private ObjectMapper mapper;
+	
+	//Default constructor
+	public v1_device(){
+		mapper = new ObjectMapper();
+		devRepo = new RadiusService();
+
+	}
+	
+	public v1_device(IDeviceService repo){
+		devRepo = repo;
+	}
+	
+		
+	//Register one or more devices each uniquely identified by MAC address
+	//If the devices are successfully created then the method returns a 201 
+	@Override
+	public Response registerDevices(String is) {
+		try
+		{
+			List<Device> list = mapper.readValue(is, mapper.getTypeFactory().constructCollectionType(List.class, Device.class));
+			devRepo.addAll(list);
+			return Response.status(201).build();
+		}catch(JsonGenerationException e){
+			return Response.status(500).entity("Json Generation Error: " + e.getMessage()).build();
+		}catch (JsonMappingException e) {
+			return Response.status(500).entity("Mapping Error:" + e.getMessage()).build();
+		}catch (IOException e) {
+			return Response.status(500).entity("IO Error: " + e.getMessage()).build();
+		}catch(Exception e){
+			return Response.status(500).entity("General Error: " + e.getMessage()).build();
+		}
+	}
+
+	//Returns a list of devices registered by the authenticated user (system)
+	@Override
+	public Response getDevices(){	
+		try{
+			List<Device> list = devRepo.getAll();
+			String responseOutput = mapper.writeValueAsString(list);
+			return Response.status(200).entity(responseOutput).build();
+		}catch(JsonGenerationException e){
+			return Response.status(500).entity("Json Generation Error: " + e.getMessage()).build();
+		}catch (JsonMappingException e) {
+			return Response.status(500).entity("Mapping Error:" + e.getMessage()).build();
+		}catch (IOException e) {
+			return Response.status(500).entity("IO Error: " + e.getMessage()).build();
+		}catch(Exception e){
+			return Response.status(500).entity("General Error: " + e.getMessage()).build();
+		}
+	}
+
+
+
+	//Query a registered device by MAC address - the MAC address must have been registered by the authenticated user
+	@Override
+	public Response getDevice(String mac) {
+		try{
+			
+			Device dev = devRepo.getOne(mac);
+			String responseOutput = mapper.writeValueAsString(dev);
+			
+			//if no mac address is found then return a 404
+			if(dev.getMac().length() == 0){
+				return Response.status(404).build();
+			}
+			
+			return Response.status(200).entity(responseOutput).build();
+			
+		}catch(JsonGenerationException e){
+			return Response.status(500).entity("Json Generation Error: " + e.getMessage()).build();
+		}catch (JsonMappingException e) {
+			return Response.status(500).entity("Mapping Error:" + e.getMessage()).build();
+		}catch (IOException e) {
+			return Response.status(500).entity("IO Error: " + e.getMessage()).build();
+		}catch(Exception e){
+			return Response.status(500).entity("General Error: " + e.getMessage()).build();
+		}
+	}
+
+	//Remove a registered device by MAC address - the MAC address must have been registered by the authenticated user
+	@Override
+	public Response removeDevice(String mac) {
+		
+		try{
+			devRepo.removeOne(mac);
+			return Response.status(200).build();
+		}catch(JsonGenerationException e){
+			return Response.status(500).entity("Json Generation Error: " + e.getMessage()).build();
+		}catch (IOException e) {
+			return Response.status(500).entity("IO Error: " + e.getMessage()).build();
+		}catch(Exception e){
+			return Response.status(500).entity("General Error: " + e.getMessage()).build();
+		}
+	}	
+	
+}

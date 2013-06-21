@@ -1,0 +1,8 @@
+package mweb.services.wifi.dstv.walkatouch.domain;
+
+import java.util.List;
+
+public class DevicePackage {
+	public List<Device> List; // or if you prefer, setters+getters
+	
+}

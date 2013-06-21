@@ -1,0 +1,70 @@
+package app1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Bank
+{
+    private Connection connection;
+    
+    public void connect() throws SQLException
+    {
+        disconnect();
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/dstv");
+        connection.setAutoCommit(false);
+    }
+    
+    public void disconnect() throws SQLException
+    {
+        if(null != connection)
+        {
+            connection.close();
+            connection = null;
+        }        
+    }
+    
+    //This method is used to verify if mac exists
+    public boolean select(String mac) throws SQLException
+    {  
+        Statement statement = null;
+        ResultSet result = null;
+        try
+        {
+            statement = connection.createStatement();
+            String sql  = "use dstv;";
+            result = statement.executeQuery(sql);
+            
+            System.out.println(sql);
+            if(!result.next())
+            {
+            	System.out.println("Rolling Back...");
+                connection.rollback();
+                return false;
+            }
+            
+            String macresult = result.getString(1);
+            
+            if(macresult.length() == 0 )
+            {
+                connection.rollback();
+                return false;
+            }
+            return true;
+        }
+        catch(SQLException exc)
+        {
+            connection.rollback();
+            return false;
+        }
+        finally
+        {
+            if(null != result) result.close();
+            if(null != statement) statement.close();
+            
+        }
+    }
+    
+}

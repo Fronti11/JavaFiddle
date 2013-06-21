@@ -1,0 +1,32 @@
+package com.mweb.tests;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.prefs.BackingStoreException;
+
+import org.junit.Test;
+
+import app1.Bank;
+
+import com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+import com.mockrunner.jdbc.PreparedStatementResultSetHandler;
+import com.mockrunner.jdbc.StatementResultSetHandler;
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockResultSet;
+
+public class SQLTest extends BasicJDBCTestCaseAdapter {
+
+	@Test
+	public void testGetAllForecasts() throws SQLException{
+		
+		Bank bank = new Bank();
+		bank.connect();
+		bank.select("100");
+		bank.disconnect();
+		assertEquals(1,1);
+	}
+
+	
+}

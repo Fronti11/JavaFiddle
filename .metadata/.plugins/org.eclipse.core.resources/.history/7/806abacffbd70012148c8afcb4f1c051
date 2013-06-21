@@ -1,0 +1,5 @@
+package mweb.services.wifi.dstv.walkatouch.interfaces;
+
+public interface SimpleJdbc {
+
+}

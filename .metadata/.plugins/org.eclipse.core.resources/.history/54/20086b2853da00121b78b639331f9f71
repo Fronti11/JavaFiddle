@@ -1,0 +1,55 @@
+package app1;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Bank
+{
+	
+    Connection connection;
+	
+	public Bank(Connection conn){
+		this.connection = conn;
+	}
+	    
+    public boolean select(String mac) throws SQLException
+    {  
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        try
+        {
+            String sql  = "select * from macs where mac = '" + mac + "'";
+            statement = connection.prepareStatement(sql);
+            result = statement.executeQuery();
+            if(!result.next())
+            {
+            	System.out.println("Rolling Back...");
+                connection.rollback();
+                return false;
+            }
+            
+            String macresult = result.getString(1);
+            
+            if(macresult.length() == 0 )
+            {
+                connection.rollback();
+                return false;
+            }
+            return true;
+        }
+        catch(SQLException exc)
+        {
+            connection.rollback();
+            return false;
+        }
+        finally
+        {
+            if(null != result) result.close();
+            if(null != statement) statement.close();
+            
+        }
+    }
+    
+}

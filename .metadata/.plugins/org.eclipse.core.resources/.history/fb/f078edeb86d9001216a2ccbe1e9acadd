@@ -1,0 +1,15 @@
+package app1;
+
+
+
+public class main {
+
+	public static void main(String[] args) {
+		
+		
+		dal d = new dal();
+		d.add();
+
+	}
+
+}

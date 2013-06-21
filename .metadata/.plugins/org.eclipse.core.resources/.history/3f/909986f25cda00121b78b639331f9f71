@@ -1,0 +1,32 @@
+package app1;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import app1.DatabaseConnectionHandler;
+
+public class Bank
+{
+    private static final String GET_ALL = "SELECT * FROM macs";
+    Connection conn;
+	
+	public Bank(Connection conn){
+		this.conn = conn;
+	}
+	    
+    public boolean select(String mac) throws SQLException
+    {  
+    	try {
+                PreparedStatement statement = conn.prepareStatement(GET_ALL);
+                ResultSet rs = statement.executeQuery(GET_ALL);
+                if (rs.next()) {
+                        return true;
+                }
+        } finally {
+        	DatabaseConnectionHandler.closeConnection(conn);
+        }
+        return false;
+    }
+    
+}

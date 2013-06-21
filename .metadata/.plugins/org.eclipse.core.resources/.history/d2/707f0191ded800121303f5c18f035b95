@@ -1,0 +1,8 @@
+#Web Service Settings
+JDBC_DRIVER=com.mysql.jdbc.Driver
+database=localhost
+username=root
+password=root
+dbname=jdbc:mysql://127.0.0.1/dstv
+
+

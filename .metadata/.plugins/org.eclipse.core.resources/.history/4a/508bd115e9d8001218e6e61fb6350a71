@@ -1,0 +1,118 @@
+package mweb.services.wifi.dstv.walkatouch.repositories;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
+import javax.print.attribute.standard.DateTimeAtCreation;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+
+import mweb.services.wifi.dstv.walkatouch.domain.Device;
+import mweb.services.wifi.dstv.walkatouch.interfaces.IDeviceService;
+
+public class RadiusService implements IDeviceService {
+	
+	private Connection con = null;
+	private Statement statement= null;
+	private String JDBC_DRIVER;
+	private String username;
+	private String password;
+	private String dbname;
+	
+	public RadiusService() throws Exception{
+		Properties prop = new Properties();
+		String configFilePath = "config.properties";
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(configFilePath);	 
+		try {
+				prop.load(inputStream);
+			} catch (IOException e) {
+
+				throw new Exception(e.getMessage());
+			}
+		
+		JDBC_DRIVER = prop.getProperty("JDBC_DRIVER");
+		username = prop.getProperty("username");
+		password = prop.getProperty("password");
+		dbname = prop.getProperty("dbname");
+	}
+
+	@Override
+	public void addAll(List<Device> list) throws Exception {
+
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement)con.createStatement();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("insert into macs(mac, password, create_date, user_type) values");
+	
+			for (Device dev: list) {
+				sb.append("('" +dev.getMac() + "', '"+dev.getMac()+"', current_timestamp , 'dstv'),");
+			}
+			String out = sb.toString();
+			statement.execute(out.substring(0, out.length() - 1));
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public List<Device> getAll() throws Exception {		
+		List<Device> devList = new ArrayList<>();
+		
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        ResultSet rs=statement.executeQuery("Select mac from macs");
+            while (rs.next()) {
+                devList.add(new Device(rs.getString(1)));
+            }
+            
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		return devList;
+	}
+
+	@Override
+	public Device getOne(String mac) throws Exception {
+		Device dev = new Device();
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        ResultSet rs=statement.executeQuery("Select * from macs where mac = '" + mac + "' LIMIT 1");
+	        while (rs.next()) {
+	        	dev.setMac(rs.getString(1));
+	        }            
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		return dev;
+	}
+
+	@Override
+	public void removeOne(String mac) throws Exception {
+		
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        statement.execute("delete from macs where mac = '" + mac + "'");
+	        
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+	}
+}

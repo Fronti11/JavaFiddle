@@ -1,0 +1,6 @@
+use rad_mwebwifi_dev;
+alter table macs add column user_type enum('dstv', 'mweb') default 'mweb'
+
+
+
+

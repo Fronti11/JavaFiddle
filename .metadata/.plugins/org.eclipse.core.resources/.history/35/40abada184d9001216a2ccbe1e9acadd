@@ -1,0 +1,15 @@
+package app1;
+
+
+
+public class dal {
+	
+	public dal(){
+		
+	}
+	
+	public void add(){
+		System.out.print("Inserting into database");
+	}
+
+}

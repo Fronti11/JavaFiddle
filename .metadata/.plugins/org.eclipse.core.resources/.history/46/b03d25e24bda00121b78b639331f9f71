@@ -1,0 +1,29 @@
+package com.mweb.tests;
+
+import java.sql.SQLException;
+import org.junit.Test;
+import app1.Bank;
+import com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+import com.mockrunner.jdbc.StatementResultSetHandler;
+import com.mockrunner.mock.jdbc.MockResultSet;
+
+public class SQLTest extends BasicJDBCTestCaseAdapter {
+
+	private void prepareResultSet()
+	{
+		StatementResultSetHandler statementHandler = getJDBCMockObjectFactory().getMockConnection().getStatementResultSetHandler();
+	    MockResultSet result = statementHandler.createResultSet();
+	    result.addRow(new Integer[] {new Integer(10000)});
+	    statementHandler.prepareGlobalResultSet(result);
+	}
+
+	@Test
+	public void testGetAllForecasts() throws SQLException{
+		prepareResultSet();
+		Bank bank = new Bank();
+		bank.connect();
+		bank.select("100");
+		bank.disconnect();
+	}
+
+}

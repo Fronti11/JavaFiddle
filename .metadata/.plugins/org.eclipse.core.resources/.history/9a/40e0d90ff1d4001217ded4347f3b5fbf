@@ -1,0 +1,37 @@
+package mweb.services.wifi.dstv.walkatouch.interfaces;
+
+import java.io.InputStream;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+
+public interface IDevice {
+
+	//Register one or more devices each uniquely identified by MAC address
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response registerDevices(InputStream is);
+		
+	//Returns a list of devices registered by the authenticated user (system)
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDevices();
+	
+	
+	//Query a registered device by MAC address - the MAC address must have been registered by the authenticated user
+	@GET
+	@Path("{mac}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDevice(@PathParam("mac") String mac);
+	
+	//Remove a registered device by MAC address - the MAC address must have been registered by the authenticated user
+	@DELETE
+	@Path("{mac}")
+	public Response removeDevice(@PathParam("mac") String mac);
+		
+}

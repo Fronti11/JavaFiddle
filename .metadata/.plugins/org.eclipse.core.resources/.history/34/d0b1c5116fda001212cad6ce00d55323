@@ -1,0 +1,44 @@
+package com.mweb.tests;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import app1.Bank;
+
+import com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+import com.mockrunner.jdbc.CallableStatementResultSetHandler;
+import com.mockrunner.jdbc.PreparedStatementResultSetHandler;
+import com.mockrunner.jdbc.StatementResultSetHandler;
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockResultSet;
+
+public class SQLTest extends BasicJDBCTestCaseAdapter {
+
+	private Connection jdbcConnection;
+	
+    private void prepareRS() {
+    	MockConnection connection = getJDBCMockObjectFactory().getMockConnection();
+    	StatementResultSetHandler resultSetHandler = connection.getStatementResultSetHandler(); 
+    	jdbcConnection = connection;
+        
+        MockResultSet result = resultSetHandler.createResultSet();
+        result.addColumn("mac");
+        result.addRow(new Object[] {"1000"});
+        //statementHandler.prepareGlobalResultSet(result);
+        resultSetHandler.prepareResultSet("SELECT scan,weight,address1,address2,address3 FROM Parcels WHERE weight < 500", result);
+}
+
+	public void testGetAllForecasts(){
+		prepareRS();
+		Bank b = new Bank(jdbcConnection);
+		try {
+			boolean result = b.select("100");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		verifySQLStatementExecuted("select *");
+	}
+
+}

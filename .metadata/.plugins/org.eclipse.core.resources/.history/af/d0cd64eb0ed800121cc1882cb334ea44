@@ -1,0 +1,98 @@
+package mweb.services.wifi.dstv.walkatouch.repositories;
+
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+
+import mweb.services.wifi.dstv.walkatouch.domain.Device;
+import mweb.services.wifi.dstv.walkatouch.interfaces.IDeviceService;
+
+public class RadiusService implements IDeviceService {
+	
+	private Connection con = null;
+	private Statement statement= null;
+	private String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	private String username = "root",password = "root";
+	private static String dbname = "jdbc:mysql://127.0.0.1/dstv";
+
+	@Override
+	public void addAll(List<Device> list) throws Exception {
+
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement)con.createStatement();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("insert into device(mac) values");
+	
+			for (Device dev: list) {
+				sb.append("('" +dev.getMac() + "'),");
+			}
+			String out = sb.toString();
+			statement.execute(out.substring(0, out.length() - 1));
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public List<Device> getAll() throws Exception {		
+		List<Device> devList = new ArrayList<>();
+		
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        ResultSet rs=statement.executeQuery("Select mac from device");
+
+            while (rs.next()) {
+                devList.add(new Device(rs.getString(1)));
+            }
+            
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		return devList;
+	}
+
+	@Override
+	public Device getOne(String mac) throws Exception {
+		Device dev = new Device();
+		
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        ResultSet rs=statement.executeQuery("Select top 1 * from device where mac = '" + mac + "'");
+	        while (rs.next()) {
+	        	dev.setMac(rs.getString(1));
+	        }            
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+		return dev;
+	}
+
+	@Override
+	public void removeOne(String mac) {
+		
+		try{
+			Class.forName(JDBC_DRIVER);
+			con = (Connection) DriverManager.getConnection(dbname, username, password);
+			statement = (Statement) con.createStatement();
+	        ResultSet rs=statement.executeQuery("delete top 1 * from device where mac = '" + mac + "'");
+	        while (rs.next()) {
+	        	dev.setMac(rs.getString(1));
+	        }            
+		}catch(Exception e){
+			throw new Exception("Error " + e.getMessage());
+		}
+	}
+}

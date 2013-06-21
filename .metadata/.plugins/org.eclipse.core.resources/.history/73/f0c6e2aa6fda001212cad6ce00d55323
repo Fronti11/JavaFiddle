@@ -1,0 +1,36 @@
+package app1;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import app1.DatabaseConnectionHandler;
+
+
+public class Bank
+{
+
+    private Connection conn;
+	
+	public Bank(Connection conn){
+		this.conn = conn;
+	}
+	    
+    public boolean select(String mac) throws SQLException
+    {  
+    	try {
+    			String sql = "SELECT scan,weight,address1,address2,address3 FROM Parcels WHERE weight < 500";
+                ResultSet rs = conn.createStatement().executeQuery(sql);
+                if (rs.next()) {
+                        return true;
+                }
+                return false;
+        }catch(SQLException exception){
+        	exception.printStackTrace();
+        } finally {
+        	DatabaseConnectionHandler.closeConnection(conn);
+        }
+		return false;
+    }
+    
+}

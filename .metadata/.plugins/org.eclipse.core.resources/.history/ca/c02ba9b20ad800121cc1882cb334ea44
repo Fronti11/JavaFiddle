@@ -1,0 +1,23 @@
+package mweb.services.wifi.dstv.walkatouch.domain;
+
+public class Device {
+	private String mac;
+
+	
+	public Device(){
+		this.mac = "00-00-00-00-00-00";
+	}
+	
+	public Device(String mac, String make, String model, String vendor){
+		this.mac = mac;
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+}

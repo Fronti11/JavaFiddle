@@ -1,0 +1,47 @@
+package app1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+
+public class dal {
+	
+    private Connection connection;
+    
+    public void connect() throws SQLException
+    {
+        disconnect();
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/dstv");
+        connection.setAutoCommit(false);
+    }
+    
+    public void disconnect() throws SQLException
+    {
+        if(null != connection)
+        {
+            connection.close();
+            connection = null;
+        }        
+    }
+	
+	public void insert() throws SQLException
+	{  
+		PreparedStatement preparedStatement = null;
+		try
+		{
+			preparedStatement =	connection.prepareStatement("insert into macs (mac) values ('100')");
+			preparedStatement.execute();
+			connection.commit();
+		}catch(SQLException exc)
+		{
+			connection.rollback();
+		}
+		finally
+		{
+			if(null != preparedStatement) 
+				preparedStatement.close();
+		}
+	}
+}

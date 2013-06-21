@@ -1,0 +1,20 @@
+package app1;
+
+import java.sql.SQLException;
+
+
+
+public class main {
+
+	public static void main(String[] args) {
+		
+		try{
+			dal d = new dal();
+			d.insert();
+			d.disconnect();
+		}catch(SQLException ex){
+			System.out.print("Error: " + ex.getMessage());
+		}
+	}
+
+}

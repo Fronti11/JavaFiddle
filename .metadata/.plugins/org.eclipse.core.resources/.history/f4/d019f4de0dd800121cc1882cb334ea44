@@ -1,0 +1,15 @@
+package mweb.services.wifi.dstv.walkatouch.interfaces;
+
+import java.util.List;
+
+import mweb.services.wifi.dstv.walkatouch.domain.Device;
+import mweb.services.wifi.dstv.walkatouch.domain.DevicePackage;
+
+public interface IDeviceService {
+	
+	public void addAll(List<Device> list) throws Exception;
+	public List<Device> getAll() throws Exception;
+	public Device getOne(String mac);
+	public void removeOne(String mac);
+
+}

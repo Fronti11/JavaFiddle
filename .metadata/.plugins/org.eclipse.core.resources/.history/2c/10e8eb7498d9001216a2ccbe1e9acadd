@@ -1,0 +1,36 @@
+package com.mweb.tests;
+
+import java.sql.SQLException;
+
+import app1.dal;
+
+import com.mockrunner.jdbc.BasicJDBCTestCaseAdapter;
+import com.mockrunner.jdbc.StatementResultSetHandler;
+import com.mockrunner.mock.jdbc.MockConnection;
+import com.mockrunner.mock.jdbc.MockResultSet;
+
+public class SQLTest extends BasicJDBCTestCaseAdapter {
+
+    private void prepareResultSet()
+    {
+        MockConnection connection = 
+            getJDBCMockObjectFactory().getMockConnection();
+        StatementResultSetHandler statementHandler = 
+            connection.getStatementResultSetHandler();
+        MockResultSet result = statementHandler.createResultSet();
+        result.addRow(new Integer[] {new Integer(10000)});
+        statementHandler.prepareGlobalResultSet(result);
+    }
+    
+    public void testTransferOk() throws SQLException
+    {
+        prepareResultSet();
+        dal d = new dal();
+        d.insert();
+        d.disconnect();
+        
+        verifySQLStatementExecuted("insert into macs (mac) values");
+
+    }
+	
+}
