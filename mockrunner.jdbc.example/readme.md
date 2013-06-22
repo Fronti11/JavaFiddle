@@ -64,7 +64,8 @@ public class TestDB extends BasicJDBCTestCaseAdapter{
 ```
 
 You can see that in the test we prepare the result of a select statement.  We are mocking a result from a select.
-We pass a mock jdbc connection into the Dao and which uses it to connect to our mock database.  Lets look at the Dao:
+We pass a mock jdbc connection into the Dao and which uses it to connect to our mock database.  We can run
+verification commands used within the Dao method. Lets look at the Dao:
 
 ```java
 package za.co.microcode.domain;
