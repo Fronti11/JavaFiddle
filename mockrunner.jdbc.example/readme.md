@@ -5,3 +5,8 @@ For more information about the framework [click here] (http://mockrunner.sourcef
 * The main purpose of this framework is to write jdbc data access layer before creating the database
 of even deciding which database and which jdbc driver to use.
 * As long as we know which database behaviour to expect, we can completely write and test the data access object.
+
+####How it works
+Our sql data access class abstracts all sql database interaction away from the normal flow of the program.
+When we are building an application we use separation of concerns(SoC) to divide responsibilities into distinct sections
+of code.
