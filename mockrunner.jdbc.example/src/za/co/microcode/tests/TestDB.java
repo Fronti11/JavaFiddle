@@ -20,7 +20,7 @@ public class TestDB extends BasicJDBCTestCaseAdapter{
         MockResultSet result = resultSetHandler.createResultSet();
         result.addRow(new Object[] {"paul", "allies", "paul.allies@gmail.com"});
         
-        resultSetHandler.prepareResultSet("SELECT *", result);
+        resultSetHandler.prepareResultSet("SELECT * from user", result);
 	}
 	
 	public void test1(){
