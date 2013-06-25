@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="main" name="Testing ant buildscript">
 	
+	<!--A couple of re-usable properties declared-->
 	<property name="build.dir" value="bin" />
 	<property name="lib.dir" value="libs" />
 	
@@ -12,13 +13,18 @@
 	
     <target name="runjunit" depends="compile" >
     	<junit printsummary="yes">
-    	    <batchtest fork="yes">
+    	    
+    		<!--We search through the whole project for classes with Test in them-->
+    		<batchtest fork="yes">
     	    	<fileset dir="${build.dir}" includes="**/*Test*"/>
     	    </batchtest>
+    		
+    		<!--We run tests on the class files so other than the jars we need to include them as well-->
     		<classpath>
     			<path refid="jarpath"></path>
     			<pathelement location="${build.dir}"/>
     		</classpath>
+    		
     	</junit>
         
     </target>
@@ -26,6 +32,9 @@
     <!--We have to compile the code to a build dir before we can run tests-->
     <target name="compile">
     	<mkdir dir="${build.dir}"/>
+    	
+    	<!--Compile all source code to the build folder-->
+    	<!--We include the jarpath as external libs are referenced/imported in the source-->
         <javac srcdir="./src" 
         	includeantruntime="false" 
         	destdir="${build.dir}" 
